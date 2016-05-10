@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Http;
+using MongoDB.Bson;
 using RestAPI.Models;
+using Link = RestAPI.Controllers.Links.Link;
 
 namespace RestAPI.Controllers
 {
@@ -12,61 +15,79 @@ namespace RestAPI.Controllers
         [HttpGet]
         public IEnumerable<Grade> GetAllGrades()
         {
-            return Repository.Repository.Grades;
+            return Repository.Repository.GetAllGrades().Select(g =>
+            {
+                var student = Repository.Repository.GetStudent(g.StudentIndex.Id.ToString());
+                var course = Repository.Repository.GetAllCourses().FirstOrDefault(c => c.GradesId.Select(grade => grade.Id.ToString()).Contains(g.Id));
+                if (student != null && course != null)
+                    g.Links = CreateLinks(g, student, course);
+                return g;
+            });
         }
 
         [HttpGet]
-        public IHttpActionResult GetGrade(int id)
+        public IHttpActionResult GetGrade(string id)
         {
-            var grade = Repository.Repository.Grades.FirstOrDefault(g => g.Id == id);
-            return grade == null ? (IHttpActionResult)NotFound() : Ok(grade);
+            var grade = Repository.Repository.GetGrade(id);
+            if (grade == null)
+                return NotFound();
+            var student = Repository.Repository.GetStudent(grade.StudentIndex.Id.ToString());
+            var course = Repository.Repository.GetAllCourses().FirstOrDefault(c => c.GradesId.Select(g => g.Id.ToString()).Contains(grade.Id));
+            if (student == null || course == null)
+                return NotFound();
+            grade.Links = CreateLinks(grade, student, course);
+            return Ok(grade);
         }
 
         [HttpPost]
         public IHttpActionResult CreateGrade(Grade grade)
         {
-            grade.Id = Repository.Repository.Grades.Count;
-            while (Repository.Repository.Grades.Any(s => s.Id == grade.Id))
-                grade.Id++;
-            if (Repository.Repository.Grades.Any(g => g.Id == grade.Id))
+            if (Repository.Repository.GradeExists(grade.Id))
                 return Conflict();
-            if (Repository.Repository.Students.All(s => s.Id != grade.StudentId) && GradeValidation(grade.Value))
+            if (!  Repository.Repository.StudentExists(grade.StudentIndex.Id.ToString()) || !GradeValidation(grade.Value))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            Repository.Repository.Grades.Add(grade);
-            return Created(Url.Link("DefaultApi", new { id = grade.Id }), grade);
+            Repository.Repository.InsertGrade(grade);
+            return Created(Url.Link("DefaultApi", new {id = grade.Id}), grade);
         }
 
         [HttpPut]
-        public IHttpActionResult UpdateGrade(int id, Grade grade)
+        public IHttpActionResult UpdateGrade(string id, Grade grade)
         {
-            var index = Repository.Repository.Grades.FindIndex(g => g.Id == id);
-            if (index == -1)
+            if (!Repository.Repository.GradeExists(id))
             {
                 grade.Id = id;
-                Repository.Repository.Grades.Add(grade);
-                return Created(Url.Link("DefaultApi", new { id = grade.Id }), grade);
+                return CreateGrade(grade);
             }
-            if (Repository.Repository.Students.All(s => s.Id != grade.StudentId) || !GradeValidation(grade.Value))
+            if (!Repository.Repository.GradeExists(grade.StudentIndex.Id.ToString()) || !GradeValidation(grade.Value))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            Repository.Repository.Grades.RemoveAt(index);
-            Repository.Repository.Grades.Add(grade);
-            return Ok(grade);
+            return Repository.Repository.UpdateGrade(id, grade)
+                ? (IHttpActionResult) Ok(grade)
+                : StatusCode(HttpStatusCode.NoContent);
         }
 
         [HttpDelete]
-        public IHttpActionResult DeleteGrade(int id)
+        public IHttpActionResult DeleteGrade(string id)
         {
-            var index = Repository.Repository.Grades.FindIndex(g => g.Id == id);
-            if (index == -1)
+            if (!Repository.Repository.GradeExists(id))
                 return NotFound();
 
-            Repository.Repository.Grades.RemoveAt(index);
-            return StatusCode(HttpStatusCode.Accepted);
+            return StatusCode(Repository.Repository.DeleteGrade(id) ? HttpStatusCode.Accepted : HttpStatusCode.NoContent);
         }
 
         private bool GradeValidation(double grade) =>
-            Regex.IsMatch(grade.ToString(), @"[2-5](\.[05])?") && grade != 2.5 && grade != 5.5;
+            Regex.IsMatch(grade.ToString(CultureInfo.InvariantCulture), @"[2-5](\.[05])?") && grade != 2.5 && grade != 5.5;
+
+        private IEnumerable<Link> CreateLinks(Grade grade, Student student, Course course)
+        {
+            return new []
+            {
+                new Link("self", $"/api/grades/{grade.Id}"),
+                new Link("parent", "/api/grades"),
+                new Link("related", $"/api/students/{student.Index}"),
+                new Link("related", $"/api/courses/{course.Id}")
+            };
+        }
     }
 }

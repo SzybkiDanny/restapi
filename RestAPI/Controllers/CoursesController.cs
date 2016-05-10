@@ -2,90 +2,78 @@
 using System.Linq;
 using System.Net;
 using System.Web.Http;
+using MongoDB.Bson;
 using RestAPI.Models;
+using Link = RestAPI.Controllers.Links.Link;
 
 namespace RestAPI.Controllers
 {
+    [RoutePrefix("api/courses")]
     public class CoursesController : ApiController
     {
         [HttpGet]
         public IEnumerable<Course> GetAllCourses()
         {
-            return Repository.Repository.Courses;
+            return Repository.Repository.GetAllCourses().Select(c =>
+            {
+                c.Links = CreateLinks(c);
+                return c;
+            });
         }
 
         [HttpGet]
-        public IHttpActionResult GetCourse(int id)
+        public IHttpActionResult GetCourse(string id)
         {
-            var course = Repository.Repository.Courses.FirstOrDefault(c => c.Id == id);
+            var course = Repository.Repository.GetCourse(id);
             if (course == null)
                 return NotFound();
-            //course.Links = CreateLinks(course);
+            course.Links = CreateLinks(course);
             return Ok(course);
         }
 
         [HttpPost]
         public IHttpActionResult CreateCourse(Course course)
         {
-            course.Id = Repository.Repository.Courses.Count;
-            while (Repository.Repository.Courses.Any(s => s.Id == course.Id))
-                course.Id++;
-            if (Repository.Repository.Courses.Any(c => c.Id == course.Id))
+            if (Repository.Repository.CourseExists(course.Id))
                 return Conflict();
-            if (!course.GradesId.All(gradeId => Repository.Repository.Grades.Any(g => g.Id == gradeId)))
+            if (course.GradesId.Any(gradeId => !Repository.Repository.GradeExists(gradeId.Id.ToString())))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            //course.Links = CreateLinks(course);
-            Repository.Repository.Courses.Add(course);
+            Repository.Repository.InsertCourse(course);
             return Created(Url.Link("DefaultApi", new { id = course.Id }), course);
         }
 
         [HttpPut]
-        public IHttpActionResult UpdateCourse(int id, Course course)
+        public IHttpActionResult UpdateCourse(string id, Course course)
         {
-            var index = Repository.Repository.Courses.FindIndex(c => c.Id == id);
-            if (index == -1)
+            if (!Repository.Repository.CourseExists(id))
             {
                 course.Id = id;
-                //Repository.Repository.Courses.Add(course);
-                //return Created(Url.Link("DefaultApi", new { id = course.Id }), course);
                 return CreateCourse(course);
             }
-            if (!course.GradesId.All(gradeId => Repository.Repository.Grades.Any(g => g.Id == gradeId)))
+            if (!course.GradesId.All(g => Repository.Repository.GradeExists(g.Id.ToString())))
                 return StatusCode(HttpStatusCode.Forbidden);
 
-            Repository.Repository.Courses.RemoveAt(index);
-            Repository.Repository.Courses.Add(course);
-            return Ok(course);
+            return Repository.Repository.UpdateCourse(id, course)
+                ? (IHttpActionResult) Ok(course)
+                : StatusCode(HttpStatusCode.NoContent);
         }
 
         [HttpDelete]
-        public IHttpActionResult DeleteCourse(int id)
+        public IHttpActionResult DeleteCourse(string id)
         {
-            var index = Repository.Repository.Courses.FindIndex(c => c.Id == id);
-            if (index == -1)
+            if (!Repository.Repository.CourseExists(id))
                 return NotFound();
 
-            Repository.Repository.Courses.RemoveAt(index);
-            return StatusCode(HttpStatusCode.Accepted);
+            return StatusCode(Repository.Repository.DeleteCourse(id) ? HttpStatusCode.Accepted : HttpStatusCode.NoContent);
         }
 
         private IEnumerable<Link> CreateLinks(Course course)
         {
-            return new[]
+            return new []
             {
-                new Link
-                {
-                    Method = "GET",
-                    Rel = "self",
-                    Href = Url.Link("GetById", new {id = course.Id})
-                },
-                new Link
-                {
-                    Method = "GET",
-                    Rel = "parent",
-                    Href = Url.Link("GetAll", null)
-                },
+                new Link("self", $"/api/courses/{course.Id}"),
+                new Link("parent", "/api/courses")
             };
         }
     }

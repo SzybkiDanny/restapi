@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.IO.MemoryMappedFiles;
 using System.Web.Http;
+using Fabrik.Common.WebAPI;
+using RestAPI.Controllers;
 
 namespace RestAPI
 {
@@ -14,11 +14,8 @@ namespace RestAPI
             // Web API routes
             config.MapHttpAttributeRoutes();
 
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+            config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}", new {id = RouteParameter.Optional}
+                );
         }
     }
 }

@@ -3,74 +3,83 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 using RestAPI.Models;
+using Link = RestAPI.Controllers.Links.Link;
 
 namespace RestAPI.Controllers
 {
-    [RoutePrefix("api/Students")]
+    [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
         [HttpGet]
         public IEnumerable<Student> GetAllStudents()
         {
-            return Repository.Repository.Students;
+            return Repository.Repository.GetAllStudents().Select(s =>
+            {
+                s.Links = CreateLinks(s);
+                return s;
+            });
         }
 
         [HttpGet]
-        public IHttpActionResult GetStudent(int id)
+        public IHttpActionResult GetStudent(string id)
         {
-            var student = Repository.Repository.Students.FirstOrDefault(s => s.Id == id);
-            return student == null ? (IHttpActionResult) NotFound() : Ok(student);
+            var student = Repository.Repository.GetStudent(id);
+            if (student == null)
+                return NotFound();
+            student.Links = CreateLinks(student);
+            return Ok(student);
         }
 
         [HttpPost]
         public IHttpActionResult CreateStudent(Student student)
         {
-            student.Id = Repository.Repository.Students.Count;
-            while (Repository.Repository.Students.Any(s => s.Id == student.Id))
-                student.Id++;
-            if (Repository.Repository.Students.Any(s => s.Id == student.Id || s.Index == student.Index))
+            if (Repository.Repository.StudentExists(student.Index))
                 return Conflict();
 
-            Repository.Repository.Students.Add(student);
-            return Created(Url.Link("DefaultApi", new { id = student.Id }), student);
+            Repository.Repository.InsertStudent( student);
+            return Created(Url.Link("DefaultApi", new { id = student.Index }), student);
         }
 
         [HttpPut]
-        public IHttpActionResult UpdateStudent(int id, Student student)
-        {       
-            var index = Repository.Repository.Students.FindIndex(s => s.Id == id);
-            if (index == -1)
+        public IHttpActionResult UpdateStudent(string id, Student student)
+        {
+            if (!Repository.Repository.StudentExists(id))
             {
-                if (Repository.Repository.Students.Any(s => s.Index == student.Index))
-                    return Conflict();
-                student.Id = id;
-                Repository.Repository.Students.Add(student);
-                return Created(Url.Link("DefaultApi", new { id = student.Id }), student);
+                student.Index = id;
+                return CreateStudent(student);
             }
 
-            Repository.Repository.Students.RemoveAt(index);
-            Repository.Repository.Students.Add(student);
-            return Ok(student);
+            return Repository.Repository.UpdateStudent(id, student)
+                ? (IHttpActionResult) Ok(student)
+                : StatusCode(HttpStatusCode.NoContent);
         }
 
         [HttpDelete]
-        public IHttpActionResult DeleteStudent(int id)
+        public IHttpActionResult DeleteStudent(string id)
         {
-            var index = Repository.Repository.Students.FindIndex(s => s.Id == id);
-            if (index == -1)
+            if (!Repository.Repository.StudentExists(id))
                 return NotFound();
 
-            Repository.Repository.Students.RemoveAt(index);
-            return StatusCode(HttpStatusCode.Accepted);
+            return StatusCode(Repository.Repository.DeleteStudent(id) ? HttpStatusCode.Accepted : HttpStatusCode.NoContent);
         }
 
         [HttpGet, Route("{id:int}/grades")]
-        public IHttpActionResult GetStudentGrades(int id)
+        public IHttpActionResult GetStudentGrades(string id)
         {
-            if (Repository.Repository.Students.FirstOrDefault(s => s.Id == id) == null)
+            if (!Repository.Repository.StudentExists(id))
                 return NotFound();
-            var grades = Repository.Repository.Grades.Where(g => g.StudentId == id);
+            var grades = Repository.Repository.GetStudentsGrades(id);
             return Ok(grades);
+        }
+
+        private IEnumerable<Link> CreateLinks(Student student)
+        {
+            return new []
+            {
+                new Link("self", $"/api/students/{student.Index}"),
+                new Link("parent", "/api/students"),
+                new Link("related", "grades", $"/api/students/{student.Index}/grades"), 
+            };
         }
     }
 }

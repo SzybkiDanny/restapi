@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Security.Policy;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 namespace RestAPI.Models
 {
-    public class Course
+    public class Course : Resource
     {
-        public int Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Lecturer { get; set; }
-        public IEnumerable<int> GradesId { get; set; }
-        //public IEnumerable<Link> Links { get; set; }
+        public List<MongoDBRef> GradesId { get; set; }
     }
 }

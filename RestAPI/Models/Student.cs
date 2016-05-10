@@ -1,11 +1,12 @@
 ﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace RestAPI.Models
 {
-    public class Student
+    public class Student : Resource
     {
-        public int Id { get; set; }
-        public int Index { get; set; }
+        [BsonId]
+        public string Index { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public DateTime BirthDate { get; set; }

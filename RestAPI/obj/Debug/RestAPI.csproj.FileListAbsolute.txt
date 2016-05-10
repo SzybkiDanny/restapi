@@ -114,3 +114,12 @@ D:\Projects\RestAPI\RestAPI\bin\System.Web.Http.WebHost.xml
 D:\Projects\RestAPI\RestAPI\obj\Debug\RestAPI.csprojResolveAssemblyReference.cache
 D:\Projects\RestAPI\RestAPI\obj\Debug\RestAPI.dll
 D:\Projects\RestAPI\RestAPI\obj\Debug\RestAPI.pdb
+D:\Projects\RestAPI\RestAPI\bin\Fabrik.Common.dll
+D:\Projects\RestAPI\RestAPI\bin\Fabrik.Common.WebAPI.dll
+D:\Projects\RestAPI\RestAPI\bin\Tavis.UriTemplates.dll
+D:\Projects\RestAPI\RestAPI\bin\Tavis.UriTemplates.pdb
+D:\Projects\RestAPI\RestAPI\bin\MongoDB.Bson.dll
+D:\Projects\RestAPI\RestAPI\bin\MongoDB.Driver.Core.dll
+D:\Projects\RestAPI\RestAPI\bin\MongoDB.Driver.dll
+D:\Projects\RestAPI\RestAPI\bin\MongoDB.Bson.xml
+D:\Projects\RestAPI\RestAPI\bin\MongoDB.Driver.xml
