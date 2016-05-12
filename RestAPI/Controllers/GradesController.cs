@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Http;
+using System.Web.Http.OData;
 using MongoDB.Bson;
 using RestAPI.Models;
 using Link = RestAPI.Controllers.Links.Link;
@@ -12,8 +13,9 @@ namespace RestAPI.Controllers
 {
     public class GradesController : ApiController
     {
+        [EnableQuery]
         [HttpGet]
-        public IEnumerable<Grade> GetAllGrades()
+        public IQueryable<Grade> GetAllGrades()
         {
             return Repository.Repository.GetAllGrades().Select(g =>
             {
@@ -22,7 +24,7 @@ namespace RestAPI.Controllers
                 if (student != null && course != null)
                     g.Links = CreateLinks(g, student, course);
                 return g;
-            });
+            }).AsQueryable();
         }
 
         [HttpGet]

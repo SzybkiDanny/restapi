@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using RestAPI.Models;
@@ -56,17 +58,38 @@ namespace RestAPI.Repository
 
         public static bool GradeExists(string id)
         {
-            return _grades.FindSync(Builders<Grade>.Filter.Eq("Id", id)).Current != null;
+            try
+            {
+                return _grades.FindSync(Builders<Grade>.Filter.Eq("Id", id)).First() != null;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
         }
 
         public static bool StudentExists(string index)
         {
-            return _students.FindSync(Builders<Student>.Filter.Eq("Index", index)).Current != null;
+            try
+            {
+                return _students.FindSync(Builders<Student>.Filter.Eq("Index", index)).First() != null;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
         }
 
         public static bool CourseExists(string id)
         {
-            return _courses.FindSync(Builders<Course>.Filter.Eq("Id", id)).Current != null;
+            try
+            {
+                return _courses.FindSync(Builders<Course>.Filter.Eq("Id", id)).First() != null;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
         }
 
         public static void InsertGrade(Grade grade)
@@ -116,7 +139,14 @@ namespace RestAPI.Repository
 
         public static ICollection<Grade> GetStudentsGrades(string index)
         {
-            return _grades.FindSync(Builders<Grade>.Filter.Eq("StudentIndex", index)).ToList();
+            return _grades.FindSync(new BsonDocument()).ToList().Where(g => g.StudentIndex.Id.ToString() == index).ToList();
+        }
+
+        public static ICollection<Grade> GetStudentsGradesByCourse(string index, string courseId)
+        {
+            var grades = GetStudentsGrades(index);
+            var course = GetCourse(courseId);
+            return grades.Where(g => course.GradesId.Exists(grade => grade.Id.ToString() == g.Id)).ToList();
         }
     }
 }

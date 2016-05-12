@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Web.Http;
+using System.Web.Http.OData;
 using MongoDB.Bson;
 using RestAPI.Models;
 using Link = RestAPI.Controllers.Links.Link;
@@ -11,14 +12,15 @@ namespace RestAPI.Controllers
     [RoutePrefix("api/courses")]
     public class CoursesController : ApiController
     {
+        [EnableQuery]
         [HttpGet]
-        public IEnumerable<Course> GetAllCourses()
+        public IQueryable<Course> GetAllCourses()
         {
             return Repository.Repository.GetAllCourses().Select(c =>
             {
                 c.Links = CreateLinks(c);
                 return c;
-            });
+            }).AsQueryable();
         }
 
         [HttpGet]

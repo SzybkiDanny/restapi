@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Net;
 using System.Web.Http;
+using System.Web.Http.OData;
 using RestAPI.Models;
+using Tavis.UriTemplates;
 using Link = RestAPI.Controllers.Links.Link;
 
 namespace RestAPI.Controllers
@@ -10,14 +12,15 @@ namespace RestAPI.Controllers
     [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
+        [EnableQuery]
         [HttpGet]
-        public IEnumerable<Student> GetAllStudents()
+        public IQueryable<Student> GetAllStudents()
         {
             return Repository.Repository.GetAllStudents().Select(s =>
             {
                 s.Links = CreateLinks(s);
                 return s;
-            });
+            }).AsQueryable();
         }
 
         [HttpGet]
@@ -63,13 +66,18 @@ namespace RestAPI.Controllers
             return StatusCode(Repository.Repository.DeleteStudent(id) ? HttpStatusCode.Accepted : HttpStatusCode.NoContent);
         }
 
-        [HttpGet, Route("{id:int}/grades")]
-        public IHttpActionResult GetStudentGrades(string id)
+        [EnableQuery]
+        [HttpGet, Route("{id}/grades")]
+        public IQueryable<Grade> GetStudentGrades(string id)
         {
-            if (!Repository.Repository.StudentExists(id))
-                return NotFound();
-            var grades = Repository.Repository.GetStudentsGrades(id);
-            return Ok(grades);
+            return Repository.Repository.GetStudentsGrades(id).AsQueryable();
+        }
+
+        [EnableQuery]
+        [HttpGet, Route("{id}/courses/{courseId}/grades")]
+        public IQueryable<Grade> GetStudentsGradesByCourse(string id, string courseId)
+        {
+            return Repository.Repository.GetStudentsGradesByCourse(id, courseId).AsQueryable();
         }
 
         private IEnumerable<Link> CreateLinks(Student student)
