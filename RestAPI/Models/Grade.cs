@@ -1,16 +1,14 @@
 ﻿using System;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
+using MongoRepository;
 
 namespace RestAPI.Models
 {
-    public class Grade : Resource
+    public class Grade : IEntity
     {
-        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public double Value { get; set; }
-        public MongoDBRef StudentIndex { get; set; }
+        public int Student { get; set; }
         public DateTime Issued { get; set; }
+        public string Course { get; set; }
     }
 }

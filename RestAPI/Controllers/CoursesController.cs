@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.OData;
-using MongoDB.Bson;
 using RestAPI.Models;
-using Link = RestAPI.Controllers.Links.Link;
+using RestAPI.Repo;
 
 namespace RestAPI.Controllers
 {
@@ -16,67 +14,49 @@ namespace RestAPI.Controllers
         [HttpGet]
         public IQueryable<Course> GetAllCourses()
         {
-            return Repository.Repository.GetAllCourses().Select(c =>
-            {
-                c.Links = CreateLinks(c);
-                return c;
-            }).AsQueryable();
+            return Repository.GetAllCourses().AsQueryable();
         }
 
         [HttpGet]
         public IHttpActionResult GetCourse(string id)
         {
-            var course = Repository.Repository.GetCourse(id);
+            var course = Repository.GetCourse(id);
             if (course == null)
                 return NotFound();
-            course.Links = CreateLinks(course);
             return Ok(course);
         }
 
         [HttpPost]
         public IHttpActionResult CreateCourse(Course course)
         {
-            if (Repository.Repository.CourseExists(course.Id))
+            if (Repository.CourseExists(course.Id))
                 return Conflict();
-            if (course.GradesId.Any(gradeId => !Repository.Repository.GradeExists(gradeId.Id.ToString())))
-                return StatusCode(HttpStatusCode.Forbidden);
 
-            Repository.Repository.InsertCourse(course);
+            Repository.InsertCourse(course);
             return Created(Url.Link("DefaultApi", new { id = course.Id }), course);
         }
 
         [HttpPut]
         public IHttpActionResult UpdateCourse(string id, Course course)
         {
-            if (!Repository.Repository.CourseExists(id))
+            if (!Repository.CourseExists(id))
             {
                 course.Id = id;
                 return CreateCourse(course);
             }
-            if (!course.GradesId.All(g => Repository.Repository.GradeExists(g.Id.ToString())))
-                return StatusCode(HttpStatusCode.Forbidden);
 
-            return Repository.Repository.UpdateCourse(id, course)
-                ? (IHttpActionResult) Ok(course)
-                : StatusCode(HttpStatusCode.NoContent);
+            Repository.UpdateCourse(course);
+            return Ok(course);
         }
 
         [HttpDelete]
         public IHttpActionResult DeleteCourse(string id)
         {
-            if (!Repository.Repository.CourseExists(id))
+            if (!Repository.CourseExists(id))
                 return NotFound();
 
-            return StatusCode(Repository.Repository.DeleteCourse(id) ? HttpStatusCode.Accepted : HttpStatusCode.NoContent);
-        }
-
-        private IEnumerable<Link> CreateLinks(Course course)
-        {
-            return new []
-            {
-                new Link("self", $"/api/courses/{course.Id}"),
-                new Link("parent", "/api/courses")
-            };
+            Repository.DeleteCourse(id);
+            return StatusCode(HttpStatusCode.Accepted);
         }
     }
 }

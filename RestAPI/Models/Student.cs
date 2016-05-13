@@ -1,14 +1,20 @@
 ﻿using System;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoRepository;
+using Newtonsoft.Json;
+using RestAPI.Converters;
 
 namespace RestAPI.Models
 {
-    public class Student : Resource
+    public class Student : IEntity
     {
-        [BsonId]
-        public string Index { get; set; }
+        [JsonIgnore]
+        public string Id { get; set; }
+        public int Index { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
+        [JsonConverter(typeof(DateOnlyConverter))]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime BirthDate { get; set; }
     }
 }
