@@ -27,10 +27,11 @@ namespace RestAPI.Repo
                 Name = "Advanced Security"
             };
 
-            Courses.Add(new[]
-            {
-                c1, c2
-            });
+            if (!Courses.Collection.Exists())
+                Courses.Add(new[]
+                {
+                    c1, c2
+                });
 
             var s1 = new Student
             {
@@ -57,10 +58,11 @@ namespace RestAPI.Repo
                 BirthDate = DateTime.Now.Date.AddYears(-19),
             };
 
-            Students.Add(new[]
-            {
-                s1, s2, s3
-            });
+            if (!Students.Collection.Exists())
+                Students.Add(new[]
+                {
+                    s1, s2, s3
+                });
 
             var g1 = new Grade
             {
@@ -95,10 +97,11 @@ namespace RestAPI.Repo
                 Course = c1.Id
             };
 
-            Grades.Add(new[]
-            {
-                g1, g2, g3, g4
-            });
+            if (!Grades.Collection.Exists())
+                Grades.Add(new[]
+                {
+                    g1, g2, g3, g4
+                });
 
             var manager = new MongoRepositoryManager<Student>();
             manager.EnsureIndex("Index", false, true, false);
