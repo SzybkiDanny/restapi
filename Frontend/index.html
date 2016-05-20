@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>The University Manager</title>
+    <meta name="description" content="An example webpage for maintaining students, grades and courses info at The Univeristy">
+    <meta name="author" content="SzybkiDanny">
+
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+    <!--  <script src="js/scripts.js"></script>-->
+    <header>
+        <figure>
+            <img class="logo" src="/img/logo.png" alt="logo" />
+        </figure>
+        <h1>The University Manager</h1>
+    </header>
+    <div class="flexible">
+        <nav class="vertical">
+            <ul>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#students">Students</a></li>
+                <li><a href="#students-grades">Student's grades</a></li>
+
+
+
+            </ul>
+        </nav>
+        <article id="courses">
+            <header>
+                <h2>Course list</h2>
+            </header>
+            <form>
+                Name:
+                <input type="search" name="name" placeholder="Name" /> Lecturer:
+                <input type="search" name="lecturer" placeholder="Lecturer" />
+                <button><img src="/icons/find.png" alt="find" />Find</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Lecturer</th>
+                        <th></th>
+                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" name="name" placeholder="Name" /> </td>
+                            <td>
+                                <input type="text" name="lecturer" placeholder="Lecturer" />
+                            </td>
+                            <td>
+                                <button><img src="/icons/add.png" alt="add" />Add</button>
+                                <button><img src="/icons/edit.png" alt="edit" />Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Advanced Programming</td>
+                            <td>Jon Skeet</td>
+                            <td>
+                                <button><img src="/icons/details.png" alt="details" />Details</button>
+                                <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Advanced Security</td>
+                            <td>Elliot Alderson</td>
+                            <td>
+                                <button><img src="/icons/details.png" alt="details" />Details</button>
+                                <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Advanced Networking</td>
+                            <td>Andrew Tanenbaum</td>
+                            <td>
+                                <button><img src="/icons/details.png" alt="details" />Details</button>
+                                <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                            </td>
+                        </tr>
+                        <tbody>
+            </table>
+        </article>
+        <article id="students">
+            <header>
+                <h2>Student list</h2>
+            </header>
+            <form>
+                Index:
+                <input type="number" name="id" min="100000" size="6" /> First name:
+                <input type="search" name="firstName" placeholder="First name" /> Second name:
+                <input type="search" name="secondName" placeholder="Second name" /> Birth date:
+                <input type="date" name="issued" />
+                <button><img src="/icons/find.png" alt="find" />Find</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>First name</th>
+                        <th>Second name</th>
+                        <th>Birth date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" name="id" readonly/>
+                        </td>
+                        <td>
+                            <input type="text" name="firstName" placeholder="First name" />
+                        </td>
+                        <td>
+                            <input type="text" name="secondName" placeholder="Second name" />
+                        </td>
+                        <td>
+                            <input type="date" name="birthDate" />
+                        </td>
+                        <td>
+                            <button><img src="/icons/add.png" alt="add" />Add</button>
+                            <button><img src="/icons/edit.png" alt="edit" />Edit</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>100012</td>
+                        <td>Adam</td>
+                        <td>Niezgódka</td>
+                        <td>1995-06-15</td>
+                        <td>
+                            <button><img src="/icons/details.png" alt="details" />Details</button>
+                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>100026</td>
+                        <td>Dade</td>
+                        <td>Murphy</td>
+                        <td>1996-06-15</td>
+                        <td>
+                            <button><img src="/icons/details.png" alt="details" />Details</button>
+                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>100187</td>
+                        <td>Van</td>
+                        <td>Wilder</td>
+                        <td>1997-06-15</td>
+                        <td>
+                            <button><img src="/icons/details.png" alt="details" />Details</button>
+                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                        </td>
+                    </tr>
+                    <tbody>
+            </table>
+        </article>
+        <article id="students-grades">
+            <header>
+                <h2>Student's grade list</h2>
+            </header>
+            <form>Grade:
+                <input type="number" min="2" max="5" step="0.5" name="grade" /> Course:
+                <select>
+                    <option value="" disabled selected>Course name</option>
+                    <option value="1">Advanced Programming</option>
+                    <option value="2">Advanced Security</option>
+                </select>
+
+                Issued:
+                <input type="date" name="issued" />
+                <button><img src="/icons/find.png" alt="find" />Find</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Grade</th>
+                        <th>Course</th>
+                        <th>Issued</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="number" value="5" min="2" max="5" step="0.5" name="grade" />
+                        </td>
+                        <td>
+                            <select>
+                                <option value="" disabled selected>Course name</option>
+                                <option value="1">Advanced Programming</option>
+                                <option value="2">Advanced Security</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="date" name="issued" />
+                        </td>
+                        <td>
+                            <button><img src="/icons/add.png" alt="add" />Add</button>
+                            <button><img src="/icons/edit.png" alt="edit" />Edit</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Advanced Programming</td>
+                        <td>2016-04-03</td>
+                        <td>
+                            <button><img src="/icons/details.png" alt="details" />Details</button>
+                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Advanced Programming</td>
+                        <td>2016-04-15</td>
+                        <td>
+                            <button><img src="/icons/details.png" alt="details" />Details</button>
+                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4.5</td>
+                        <td>Advanced Security</td>
+                        <td>2016-05-15</td>
+                        <td>
+                            <button><img src="/icons/details.png" alt="details" />Details</button>
+                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
+                        </td>
+                    </tr>
+                    <tbody>
+            </table>
+        </article>
+    </div>
+    <footer>
+        <ul>
+            <li>Author: SzybkiDanny</li>
+            <li><a href="mailto:example@example.com">Contact me</a></li>
+            <li><a href="tel:+555555555">Call me</a></li>
+            <li><a href="http://www.put.poznan.pl/">My home university</a></li>
+        </ul>
+    </footer>
+
+</body>
+
+</html>
