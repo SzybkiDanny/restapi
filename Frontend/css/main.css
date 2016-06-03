@@ -7,6 +7,18 @@ button > img {
     vertical-align: bottom;
 }
 
+body > header {
+    background-color: #4CC673;
+}
+
+footer {
+    background-color: #71C64C;
+}
+
+header {
+    color: #6A6F6B;
+}
+
 table td,
 th {
     border: 1px solid #ddd;
@@ -16,6 +28,7 @@ table {
     border-collapse: collapse;
     width: 100%;
     font-family: monospace;
+    margin: 10px;
 }
 
 td,
@@ -78,13 +91,13 @@ nav.vertical > ul > li {
 }
 
 nav.vertical > ul > li > a {
-    background-image: linear-gradient(135deg, rgb(114, 51, 98), rgb(157, 34, 60));
+    background-image: linear-gradient(135deg, rgb(2, 172, 76), rgb(7, 115, 44));
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .1), 0 1px 1px rgba(0, 0, 0, .1);
-    color: rgb(255, 255, 255);
+    color: white;
     display: block;
-    font-size: .85rem;
+    font-size: 0.85em;
     font-family: sans-serif;
-    letter-spacing: .5rem;
+    letter-spacing: .5em;
     line-height: 40px;
     text-transform: uppercase;
 }
@@ -97,7 +110,52 @@ a {
     text-decoration: none;
 }
 
-input {
+input,
+select {
     font-family: monospace;
     border-color: #4CAF50;
+}
+
+tr:not(:first-child) input {
+    border: none;
+    background-color: inherit;
+}
+
+@media print {
+    body {
+        background-color: white;
+    }
+    header {
+        color: black;
+    }
+    article:target {
+        display: block
+    }
+    body > header,
+    footer,
+    nav,
+    button,
+    form,
+    tbody tr:first-child,
+    td:last-child,
+    th:last-child {
+        display: none;
+    }
+    body table td,
+    th {
+        border: none;
+    }
+    table thead th {
+        background-color: white;
+        color: black;
+        font-size: 1.2em;
+    }
+    table tbody tr {
+        background-color: white;
+        border: solid;
+        border-width: 1px 0;
+    }
+    tr:nth-child(even) {
+        background-color: white;
+    }
 }

@@ -7,7 +7,7 @@
     <title>Grade Manager</title>
     <meta name="description" content="An example webpage for maintaining students, grades and courses info at The Univeristy">
     <meta name="author" content="SzybkiDanny">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/main.css">
 
     <!--[if lt IE 9]>
@@ -29,9 +29,6 @@
                 <li><a href="#courses">Courses</a></li>
                 <li><a href="#students">Students</a></li>
                 <li><a href="#students-grades">Student's grades</a></li>
-
-
-
             </ul>
         </nav>
         <article id="courses">
@@ -65,24 +62,36 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Advanced Programming</td>
-                            <td>Jon Skeet</td>
+                            <td>
+                                <input type="text" name="name" value="Advanced Programming" />
+                            </td>
+                            <td>
+                                <input type="text" name="lecturer" value="Jon Skeet" />
+                            </td>
                             <td>
                                 <button><img src="/icons/details.png" alt="details" />Details</button>
                                 <button><img src="/icons/delete.png" alt="delete" />Delete</button>
                             </td>
                         </tr>
                         <tr>
-                            <td>Advanced Security</td>
-                            <td>Elliot Alderson</td>
+                            <td>
+                                <input type="text" name="name" value="Advanced Security" />
+                            </td>
+                            <td>
+                                <input type="text" name="lecturer" value="Elliot Alderson" />
+                            </td>
                             <td>
                                 <button><img src="/icons/details.png" alt="details" />Details</button>
                                 <button><img src="/icons/delete.png" alt="delete" />Delete</button>
                             </td>
                         </tr>
                         <tr>
-                            <td>Advanced Networking</td>
-                            <td>Andrew Tanenbaum</td>
+                            <td>
+                                <input type="text" name="name" value="Advanced Networking" />
+                            </td>
+                            <td>
+                                <input type="text" name="lecturer" value="Andrew Tanenbaum" />
+                            </td>
                             <td>
                                 <button><img src="/icons/details.png" alt="details" />Details</button>
                                 <button><img src="/icons/delete.png" alt="delete" />Delete</button>
@@ -133,30 +142,54 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>100012</td>
-                        <td>Adam</td>
-                        <td>Niezgódka</td>
-                        <td>1995-06-15</td>
+                        <td>
+                            <input type="number" name="id" min="100000" size="6" value="100012" />
+                        </td>
+                        <td>
+                            <input type="search" name="firstName" placeholder="First name" value="Adam" />
+                        </td>
+                        <td>
+                            <input type="search" name="secondName" placeholder="Second name" value="Niezgódka" />
+                        </td>
+                        <td>
+                            <input type="date" name="issued" value="1995-06-15" />
+                        </td>
                         <td>
                             <button><img src="/icons/details.png" alt="details" />Details</button>
                             <button><img src="/icons/delete.png" alt="delete" />Delete</button>
                         </td>
                     </tr>
                     <tr>
-                        <td>100026</td>
-                        <td>Dade</td>
-                        <td>Murphy</td>
-                        <td>1996-06-15</td>
+                        <td>
+                            <input type="number" name="id" min="100000" size="6" value="100026" />
+                        </td>
+                        <td>
+                            <input type="search" name="firstName" placeholder="First name" value="Dade" />
+                        </td>
+                        <td>
+                            <input type="search" name="secondName" placeholder="Second name" value="Murphy" />
+                        </td>
+                        <td>
+                            <input type="date" name="issued" value="1996-06-15" />
+                        </td>
                         <td>
                             <button><img src="/icons/details.png" alt="details" />Details</button>
                             <button><img src="/icons/delete.png" alt="delete" />Delete</button>
                         </td>
                     </tr>
                     <tr>
-                        <td>100187</td>
-                        <td>Van</td>
-                        <td>Wilder</td>
-                        <td>1997-06-15</td>
+                        <td>
+                            <input type="number" name="id" min="100000" size="6" value="100187" />
+                        </td>
+                        <td>
+                            <input type="search" name="firstName" placeholder="First name" value="Van" />
+                        </td>
+                        <td>
+                            <input type="search" name="secondName" placeholder="Second name" value="Wilder" />
+                        </td>
+                        <td>
+                            <input type="date" name="issued" value="1997-06-15" />
+                        </td>
                         <td>
                             <button><img src="/icons/details.png" alt="details" />Details</button>
                             <button><img src="/icons/delete.png" alt="delete" />Delete</button>
@@ -211,27 +244,54 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>5</td>
-                        <td>Advanced Programming</td>
-                        <td>2016-04-03</td>
+                        <td>
+                            <input type="number" min="2" max="5" step="0.5" name="grade" value="5" />
+                        </td>
+                        <td>
+                            <select>
+                                <option value="1" selected>Advanced Programming</option>
+                                <option value="2">Advanced Security</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="date" name="issued" value="2016-04-03" />
+                        </td>
                         <td>
                             <button><img src="/icons/details.png" alt="details" />Details</button>
                             <button><img src="/icons/delete.png" alt="delete" />Delete</button>
                         </td>
                     </tr>
                     <tr>
-                        <td>4</td>
-                        <td>Advanced Programming</td>
-                        <td>2016-04-15</td>
+                        <td>
+                            <input type="number" min="2" max="5" step="0.5" name="grade" value="4" />
+                        </td>
+                        <td>
+                            <select>
+                                <option value="1" selected>Advanced Programming</option>
+                                <option value="2">Advanced Security</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="date" name="issued" value="2016-04-15" />
+                        </td>
                         <td>
                             <button><img src="/icons/details.png" alt="details" />Details</button>
                             <button><img src="/icons/delete.png" alt="delete" />Delete</button>
                         </td>
                     </tr>
                     <tr>
-                        <td>4.5</td>
-                        <td>Advanced Security</td>
-                        <td>2016-05-15</td>
+                        <td>
+                            <input type="number" min="2" max="5" step="0.5" name="grade" value="4.5" />
+                        </td>
+                        <td>
+                            <select>
+                                <option value="1">Advanced Programming</option>
+                                <option value="2" selected>Advanced Security</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="date" name="issued" value="2016-05-15" />
+                        </td>
                         <td>
                             <button><img src="/icons/details.png" alt="details" />Details</button>
                             <button><img src="/icons/delete.png" alt="delete" />Delete</button>
