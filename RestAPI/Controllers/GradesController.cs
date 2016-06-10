@@ -3,12 +3,14 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.OData;
 using RestAPI.Models;
 using RestAPI.Repo;
 
 namespace RestAPI.Controllers
 {
+    [EnableCors(origins: "http://127.0.0.1:63049", headers: "*", methods: "*")]
     public class GradesController : ApiController
     {
         [EnableQuery]
@@ -47,7 +49,7 @@ namespace RestAPI.Controllers
                 grade.Id = id;
                 return CreateGrade(grade);
             }
-            if (!Repository.GradeExists(grade.Student.ToString()) || !Repository.CourseExists(grade.Course) || !GradeValidation(grade.Value))
+            if (!Repository.StudentExists(grade.Student) || !Repository.CourseExists(grade.Course) || !GradeValidation(grade.Value))
                 return StatusCode(HttpStatusCode.Forbidden);
 
             Repository.UpdateGrade(grade);
