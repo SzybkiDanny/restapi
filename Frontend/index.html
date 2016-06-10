@@ -16,7 +16,11 @@
 </head>
 
 <body>
-    <!--  <script src="js/scripts.js"></script>-->
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+
     <header>
         <figure>
             <img class="logo" src="/img/logo.png" alt="logo" />
@@ -28,19 +32,16 @@
             <ul>
                 <li><a href="#courses">Courses</a></li>
                 <li><a href="#students">Students</a></li>
-                <li><a href="#students-grades">Student's grades</a></li>
             </ul>
         </nav>
         <article id="courses">
             <header>
                 <h2>Course list</h2>
             </header>
-            <form>
-                Name:
-                <input type="search" name="name" placeholder="Name" /> Lecturer:
-                <input type="search" name="lecturer" placeholder="Lecturer" />
-                <button><img src="/icons/find.png" alt="find" />Find</button>
-            </form>
+            Name:
+            <input type="text" placeholder="Name" data-bind="value: newCourse.Name" /> Lecturer:
+            <input type="text" placeholder="Lecturer" data-bind="value: newCourse.Lecturer" />
+            <button data-bind="click: courses.add(courses, newCourse)"><img src="/icons/add.png" alt="add" />Add</button>
 
             <table>
                 <thead>
@@ -49,69 +50,32 @@
                         <th>Lecturer</th>
                         <th></th>
                     </tr>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type="text" name="name" placeholder="Name" /> </td>
-                            <td>
-                                <input type="text" name="lecturer" placeholder="Lecturer" />
-                            </td>
-                            <td>
-                                <button><img src="/icons/add.png" alt="add" />Add</button>
-                                <button><img src="/icons/edit.png" alt="edit" />Edit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="text" name="name" value="Advanced Programming" />
-                            </td>
-                            <td>
-                                <input type="text" name="lecturer" value="Jon Skeet" />
-                            </td>
-                            <td>
-                                <button><img src="/icons/details.png" alt="details" />Details</button>
-                                <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="text" name="name" value="Advanced Security" />
-                            </td>
-                            <td>
-                                <input type="text" name="lecturer" value="Elliot Alderson" />
-                            </td>
-                            <td>
-                                <button><img src="/icons/details.png" alt="details" />Details</button>
-                                <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="text" name="name" value="Advanced Networking" />
-                            </td>
-                            <td>
-                                <input type="text" name="lecturer" value="Andrew Tanenbaum" />
-                            </td>
-                            <td>
-                                <button><img src="/icons/details.png" alt="details" />Details</button>
-                                <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                            </td>
-                        </tr>
-                        <tbody>
+                </thead>
+                <tbody data-bind="foreach: courses">
+                    <tr>
+                        <td>
+                            <input type="text" placeholder="Name" data-bind="value: Name" />
+                        </td>
+                        <td>
+                            <input type="text" placeholder="Lecturer" data-bind="value: Lecturer" />
+                        </td>
+                        <td>
+                            <button data-bind="click: $parent.courses.update.bind($parent.courses)"><img src="/icons/edit.png" alt="save" />Save</button>
+                            <button data-bind="click: $parent.courses.delete.bind($parent.courses)"><img src="/icons/delete.png" alt="delete" />Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </article>
         <article id="students">
             <header>
                 <h2>Student list</h2>
             </header>
-            <form>
-                Index:
-                <input type="number" name="id" min="100000" size="6" /> First name:
-                <input type="search" name="firstName" placeholder="First name" /> Second name:
-                <input type="search" name="secondName" placeholder="Second name" /> Birth date:
-                <input type="date" name="issued" />
-                <button><img src="/icons/find.png" alt="find" />Find</button>
-            </form>
+            First name:
+            <input type="search" placeholder="First name" data-bind="value: newStudent.FirstName" /> Second name:
+            <input type="search" placeholder="Second name" data-bind="value: newStudent.SecondName" /> Birth date:
+            <input type="date" name="issued" data-bind="value: newStudent.BirthDate" />
+            <button data-bind="click: students.add(students, newStudent)"><img src="/icons/add.png" alt="add" />Add</button>
             <table>
                 <thead>
                     <tr>
@@ -122,98 +86,47 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody data-bind="foreach: students">
                     <tr>
                         <td>
-                            <input type="text" name="id" readonly/>
+                            <input type="text" data-bind="value: Id" readonly/>
                         </td>
                         <td>
-                            <input type="text" name="firstName" placeholder="First name" />
+                            <input type="text" placeholder="First name" data-bind="value: FirstName" />
                         </td>
                         <td>
-                            <input type="text" name="secondName" placeholder="Second name" />
+                            <input type="text" placeholder="Sceond name" data-bind="value: SecondName" />
                         </td>
                         <td>
-                            <input type="date" name="birthDate" />
+                            <input type="date" placeholder="Date" data-bind="value: BirthDate" />
                         </td>
                         <td>
-                            <button><img src="/icons/add.png" alt="add" />Add</button>
-                            <button><img src="/icons/edit.png" alt="edit" />Edit</button>
+                            <button data-bind="click: $parent.studentGrades"><img src="/icons/grade.png" alt="grade" />Grades</button>
+                            <button data-bind="click: $parent.students.update.bind($parent.students)"><img src="/icons/edit.png" alt="save" />Save</button>
+                            <button data-bind="click: $parent.students.delete.bind($parent.students)"><img src="/icons/delete.png" alt="delete" />Delete</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <input type="number" name="id" min="100000" size="6" value="100012" />
-                        </td>
-                        <td>
-                            <input type="search" name="firstName" placeholder="First name" value="Adam" />
-                        </td>
-                        <td>
-                            <input type="search" name="secondName" placeholder="Second name" value="Niezgódka" />
-                        </td>
-                        <td>
-                            <input type="date" name="issued" value="1995-06-15" />
-                        </td>
-                        <td>
-                            <button><img src="/icons/details.png" alt="details" />Details</button>
-                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="number" name="id" min="100000" size="6" value="100026" />
-                        </td>
-                        <td>
-                            <input type="search" name="firstName" placeholder="First name" value="Dade" />
-                        </td>
-                        <td>
-                            <input type="search" name="secondName" placeholder="Second name" value="Murphy" />
-                        </td>
-                        <td>
-                            <input type="date" name="issued" value="1996-06-15" />
-                        </td>
-                        <td>
-                            <button><img src="/icons/details.png" alt="details" />Details</button>
-                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="number" name="id" min="100000" size="6" value="100187" />
-                        </td>
-                        <td>
-                            <input type="search" name="firstName" placeholder="First name" value="Van" />
-                        </td>
-                        <td>
-                            <input type="search" name="secondName" placeholder="Second name" value="Wilder" />
-                        </td>
-                        <td>
-                            <input type="date" name="issued" value="1997-06-15" />
-                        </td>
-                        <td>
-                            <button><img src="/icons/details.png" alt="details" />Details</button>
-                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                        </td>
-                    </tr>
-                    <tbody>
+                </tbody>
             </table>
         </article>
         <article id="students-grades">
             <header>
                 <h2>Student's grade list</h2>
+                <h3><span data-bind="text: currentStudent.fullName()"></span></h3>
             </header>
-            <form>Grade:
-                <input type="number" min="2" max="5" step="0.5" name="grade" /> Course:
-                <select>
-                    <option value="" disabled selected>Course name</option>
-                    <option value="1">Advanced Programming</option>
-                    <option value="2">Advanced Security</option>
-                </select>
+            Grade:
+            <input type="number" min="2" max="5" step="0.5" name="grade" data-bind="value: newGrade.Value" /> Course:
+            <select data-bind="options: viewModel.courses(),
+                                   optionsText: 'Name',
+                                   optionsValue: 'Id',
+                                   value: newGrade.Course,
+                                   optionsCaption: 'Course name'" required></select>
 
-                Issued:
-                <input type="date" name="issued" />
-                <button><img src="/icons/find.png" alt="find" />Find</button>
-            </form>
+            Issued:
+            <input type="date" data-bind="value: newGrade.Issued" />
+            <!--            <button data-bind="click: studentsGrades.add(studentsGrades, newGrade)">-->
+            <button data-bind="click: addStudentGrade">
+                <img src="/icons/add.png" alt="add" />Add</button>
             <table>
                 <thead>
                     <tr>
@@ -223,81 +136,27 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody data-bind="foreach: studentsGrades">
                     <tr>
                         <td>
-                            <input type="number" value="5" min="2" max="5" step="0.5" name="grade" />
+                            <input type="number" min="2" max="5" step="0.5" data-bind="value: Value" />
                         </td>
                         <td>
-                            <select>
-                                <option value="" disabled selected>Course name</option>
-                                <option value="1">Advanced Programming</option>
-                                <option value="2">Advanced Security</option>
-                            </select>
+                            <select data-bind="options: viewModel.courses(),
+                                               optionsText: 'Name',
+                                               optionsValue: 'Id',
+                                               value: Course,
+                                               optionsCaption: 'Course name'" required></select>
                         </td>
                         <td>
-                            <input type="date" name="issued" />
+                            <input type="date" placeholder="Date" data-bind="value: Issued" />
                         </td>
                         <td>
-                            <button><img src="/icons/add.png" alt="add" />Add</button>
-                            <button><img src="/icons/edit.png" alt="edit" />Edit</button>
+                            <button data-bind="click: $parent.studentsGrades.update.bind($parent.studentsGrades)"><img src="/icons/edit.png" alt="save" />Save</button>
+                            <button data-bind="click: $parent.studentsGrades.delete.bind($parent.studentsGrades)"><img src="/icons/delete.png" alt="delete" />Delete</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <input type="number" min="2" max="5" step="0.5" name="grade" value="5" />
-                        </td>
-                        <td>
-                            <select>
-                                <option value="1" selected>Advanced Programming</option>
-                                <option value="2">Advanced Security</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="date" name="issued" value="2016-04-03" />
-                        </td>
-                        <td>
-                            <button><img src="/icons/details.png" alt="details" />Details</button>
-                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="number" min="2" max="5" step="0.5" name="grade" value="4" />
-                        </td>
-                        <td>
-                            <select>
-                                <option value="1" selected>Advanced Programming</option>
-                                <option value="2">Advanced Security</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="date" name="issued" value="2016-04-15" />
-                        </td>
-                        <td>
-                            <button><img src="/icons/details.png" alt="details" />Details</button>
-                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="number" min="2" max="5" step="0.5" name="grade" value="4.5" />
-                        </td>
-                        <td>
-                            <select>
-                                <option value="1">Advanced Programming</option>
-                                <option value="2" selected>Advanced Security</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="date" name="issued" value="2016-05-15" />
-                        </td>
-                        <td>
-                            <button><img src="/icons/details.png" alt="details" />Details</button>
-                            <button><img src="/icons/delete.png" alt="delete" />Delete</button>
-                        </td>
-                    </tr>
-                    <tbody>
+                </tbody>
             </table>
         </article>
     </div>

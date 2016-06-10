@@ -20,7 +20,7 @@ ko.observableArray.fn.fetchData = function () {
     });
 }
 
-ko.observableArray.fn.add = function (item) {
+ko.observableArray.fn.add = function (array, item) {
     var self = this;
     jQuery.support.cors = true;
     $.ajax({
@@ -29,7 +29,8 @@ ko.observableArray.fn.add = function (item) {
         data: JSON.stringify(item),
         contentType: 'application/json',
         success: function (data) {
-            self.push(ko.mapping.fromJS(item));
+            //            self.push(ko.mapping.fromJS(item));
+            self.fetchData();
         }
     });
 }
@@ -41,8 +42,9 @@ ko.observableArray.fn.delete = function (item) {
         url: this.url + '/' + item.Id(),
         type: 'DELETE',
         success: function (data) {
-            self().splice(index, 1);
-            console.log(data);
+            self.remove(function (i) {
+                return i.Id() == item.Id();
+            });
         }
     });
 }
@@ -56,8 +58,41 @@ ko.observableArray.fn.update = function (item) {
         dataType: 'json',
         contentType: 'application/json',
         data: ko.toJSON(item),
+        success: function (data) {}
+    });
+}
+
+var getStudentGrades = function (item) {
+    jQuery.support.cors = true;
+    $.ajax({
+        url: 'http://localhost:54472/api/students/' + item.Id() + "/grades",
+        type: 'GET',
+        dataType: 'json',
         success: function (data) {
-            console.log(data);
+            viewModel.studentsGrades.removeAll();
+            for (var i = 0; i < data.length; i++) {
+                viewModel.studentsGrades.push(ko.mapping.fromJS(data[i]));
+            }
+            viewModel.newGrade.student(item.Id());
+            viewModel.currentStudent.firstName(item.FirstName());
+            viewModel.currentStudent.secondName(item.SecondName());
+            window.location.replace('/index.html#students-grades');
+        }
+    });
+}
+
+var addNewGrade = function () {
+    console.log(viewModel.newGrade.student());
+    var self = this;
+    jQuery.support.cors = true;
+    $.ajax({
+        url: 'http://localhost:54472/api/grades',
+        type: 'POST',
+        data: JSON.stringify(viewModel.newGrade),
+        contentType: 'application/json',
+        success: function (data) {
+            //            self.push(ko.mapping.fromJS(item));
+            self.fetchData();
         }
     });
 }
@@ -66,22 +101,31 @@ var viewModel = {
     courses: ko.observableArray(),
     students: ko.observableArray(),
     studentsGrades: ko.observableArray(),
-    getStudentsGrades: function (item) {
-        jQuery.support.cors = true;
-        $.ajax({
-            url: 'http://localhost:54472/api/students/' + item.Id() + "/grades",
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                viewModel.studentsGrades.removeAll();
-                for (var i = 0; i < data.length; i++) {
-                    viewModel.studentsGrades.push(ko.mapping.fromJS(data[i]));
-                }
-                console.log(viewModel.studentsGrades());
-                window.location.replace('/index.html#students-grades');
-            }
-        });
-    }
+    currentStudent: {
+        id: new ko.observable(),
+        firstName: new ko.observable(),
+        secondName: new ko.observable(),
+        fullName: function () {
+            return this.firstName() + " " + this.secondName();
+        }
+    },
+    studentGrades: getStudentGrades,
+    newCourse: {
+        name: new ko.observable(),
+        lecturer: new ko.observable()
+    },
+    newStudent: {
+        firstName: new ko.observable(),
+        secondName: new ko.observable(),
+        birthDate: new ko.observable()
+    },
+    newGrade: {
+        value: new ko.observable(),
+        course: new ko.observable(),
+        issued: new ko.observable(),
+        student: new ko.observable()
+    },
+    addStudentGrade: addNewGrade
 };
 
 $(document).ready(function () {
@@ -92,10 +136,4 @@ $(document).ready(function () {
     viewModel.courses.fetchData();
     viewModel.students.fetchData();
     viewModel.studentsGrades.fetchData();
-
-    setInterval(function () {
-        //        console.log(viewModel.courses()[0].Lecturer());
-        //        console.log(viewModel.studentsGrades()[2].Course());
-    }, 1000);
-
 });
