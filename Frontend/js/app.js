@@ -66,11 +66,21 @@ var viewModel = {
     courses: ko.observableArray(),
     students: ko.observableArray(),
     studentsGrades: ko.observableArray(),
-    removeGrade: function (item) {
-        console.log(item);
-    },
-    myFunction: function (item, index) {
-        console.log(index);
+    getStudentsGrades: function (item) {
+        jQuery.support.cors = true;
+        $.ajax({
+            url: 'http://localhost:54472/api/students/' + item.Id() + "/grades",
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                viewModel.studentsGrades.removeAll();
+                for (var i = 0; i < data.length; i++) {
+                    viewModel.studentsGrades.push(ko.mapping.fromJS(data[i]));
+                }
+                console.log(viewModel.studentsGrades());
+                window.location.replace('/index.html#students-grades');
+            }
+        });
     }
 };
 
