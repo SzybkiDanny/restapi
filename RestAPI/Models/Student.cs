@@ -10,6 +10,7 @@ namespace RestAPI.Models
     {
         [JsonIgnore]
         public string Id { get; set; }
+        [JsonProperty(PropertyName = "Id")]
         public int Index { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
