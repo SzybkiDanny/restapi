@@ -85,7 +85,7 @@ namespace RestAPI.Repo
                 Id = Guid.NewGuid().ToString(),
                 Issued = DateTime.Now.AddMonths(-3),
                 Student = s3.Index,
-                Value = 4,
+                Value = 4.5,
                 Course = c2.Id
             };
             var g4 = new Grade
