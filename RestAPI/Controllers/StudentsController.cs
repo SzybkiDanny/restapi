@@ -1,12 +1,14 @@
 ﻿using System.Linq;
 using System.Net;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.OData;
 using RestAPI.Models;
 using RestAPI.Repo;
 
 namespace RestAPI.Controllers
 {
+    [EnableCors(origins: "http://127.0.0.1:63049", headers: "*", methods: "*")]
     [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
